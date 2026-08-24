@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATC-POST</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container{flex-direction: column;}
+        form{display: flex;flex-direction: column;animation: fade 2s ease-in-out;box-shadow: 0 0 20px #515151;}
+        @keyframes fade{from{transform: translate(700px,100px) rotate(45deg);}to{transform: translate(0px,0px)rotate(0deg);}}
+        form .input-group,form button{margin: 20px 0px;}
+        form button{background-color: #23A114;font-size: 20px;padding: 10px 0;border-radius: 9px;width: 100%;color: #111111;}
+        form button:hover{background-color: #00A011;border: none;transition: 1s;transform: scaleX(1.09);border-radius: 0px;box-shadow: 0 0 30px #00A011;}
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h2>ADD A POST</h2>
+    <form action="add_post.php" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+            <p>choose a file to post</p>
+            <input type="file" name="file" id="file" required>
+        </div>
+
+        <div class="input-group">
+            <p>add description for the post</p>
+            <textarea name="description" id="description" cols="30" rows="5" placeholder="Add post description here ...... " required></textarea>
+        </div>
+
+        <button type="submit" name="post" id="post">POST</button>
+    </form>
+    </div>
+</body>
+</html>

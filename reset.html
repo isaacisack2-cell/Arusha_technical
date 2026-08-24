@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover Password</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/boxicons.min.css">
+</head>
+<body>
+    <div class="container mt-5 p-5" style="background-color: rgba(215, 210, 220, 0.9);">
+        <header class="text-center mb-5">
+            <h2 class="text-center fw-bold">ATC-SMS</h2>
+            <h3>Password Recovery Module</h3>
+        </header>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div style="display: flex;justify-content: center;margin: 16px 0;">
+                        <img src="pictures/info.jpg" alt="image" class="card-img-top w-50">
+                    </div>
+                    <p class="text-dark text-center fw-bold">How To Recover Password</p>
+                    <div class="card-body bg-success">
+                        <p class="card-text text-dark fw-bold">
+                            Step 1 : Admission number Verification <br>Fill in your Admission number, then click verify admission number button. If Admission number is valid you will be redirected to step 2. <br>Step 2 : Password Recovery options <br>You can receive new password through email address and mobile phone number that you provided during account activation stage. If you dont have access to both mobile phone and email address, use option three of filling google form 
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+           
+            <div class="col-6">
+                <div class="card">
+                    <span class="ml-5"><a href="login.php"><i class="bx bx-home mt-3 ml-5 text-dark fs-5 fw-bold"></i></a></span>
+                    <div style="display: flex;justify-content: center;margin: 16px 0;">
+                        <img src="pictures/lockpad.jpg" alt="image" class="card-img-top w-50">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Password Reset-step1</h3>
+                        <form action="reset.php" method="post">
+                        <p class="card-text text-dark">
+                            Staff : <a href="#">click here to reset your password</a><br>
+                            Student : Fill in your admission number then click a button below.
+                            <div class="row"><span class="col-2 mr-0 bg-secondary"><i class="bx bx-user text-white fw-bold text-center fs-3"></i></span><input type="number" name="verifyAdno" id="VerifyAdno" required placeholder="Type your admission number" class="col" ml-0></div>
+                            This part should be used by students who have created accounts but can't login after forgetting password. If you haven't forgotten your password, <a href="login.php">click here to login</a>. If you have't created an account, <a href="signin.php">click here to create account</a>
+                        </p>
+                        <button type="submit" class="btn bg-success w-100 text-white" name="verifyBtn">Verify Admission Number</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
