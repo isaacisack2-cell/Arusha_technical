@@ -1,7 +1,8 @@
 <?php
+#session_start();
 require "config.php";
 
-if(!isset($_COOKIE['role']) && !isset($_SESSION['username']) && $_COOKIE['role'] != 'student'){
+if(!isset($_COOKIE['role']) || !isset($_SESSION['username']) || $_COOKIE['role'] != 'student'){
     header("location:login.php");
     exit();
 }
