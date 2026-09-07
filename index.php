@@ -5,6 +5,10 @@ try{
     $sql->execute();
     $result = $sql->fetchAll();
 
+    $announcements = $pdo->prepare("SELECT * FROM announcements ORDER BY Id limit 5");
+    $announcements->execute();
+    $announcementsResult = $announcements->fetchAll();
+
 }catch(PDOException $e){
     $error = $e->getMessage();
 }
@@ -17,7 +21,7 @@ try{
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome ATC - Arusha Technical College</title>
-    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="style2.css?v=20260907">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,7 +37,7 @@ try{
 
             <!--Brand Title-->
             <div class="brand-title">
-                <h2>Welcome ATC</h2>
+                <h2 aria-label="Arusha Technical College"></h2>
             </div>
 
             <!--Desktop navigation link-->
@@ -42,8 +46,8 @@ try{
                     <li><a href="index.php">Home</a></li>
                     <li><a href="about.php">About Us</a></li>
                     <li><a href="login.php">ATC-SMS</a></li>
-                    <li><a href="#">Admission</a></li>
-                    <li><a href="#documents">Research</a></li>
+                    <li><a href="register.php">Admissions</a></li>
+                    <li><a href="#documents">Research &amp; documents</a></li>
                     <li><a href="contact.php">Contact Us</a></li>
                 </ul>
             </nav>
@@ -62,11 +66,13 @@ try{
             <button class="close-btn" id="closeDrawer">&times;</button>
         </div>
         <ul class="drawer-links">
-            <li><a href="index.php"><i class="fa-solid fa-house">Home</i></a></li>
-            <li><a href="login.php"><i class="fa-solid fa-graduation-cap"></i>SMS ATC</a></li>
-            <li><a href="#"><i class="fa-solid fa-file-pen"></i>Admissions</a></li>
-            <li><a href="#recentPosts"><i class="fa-solid fa-newspaper"></i>News $ announcements</a></li>
+            <li><a href="index.php"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li><a href="about.php"><i class="fa-solid fa-circle-info"></i>About ATC</a></li>
+            <li><a href="login.php"><i class="fa-solid fa-graduation-cap"></i>ATC-SMS</a></li>
+            <li><a href="register.php"><i class="fa-solid fa-file-pen"></i>Admissions</a></li>
+            <li><a href="#recentPosts"><i class="fa-solid fa-newspaper"></i>News &amp; announcements</a></li>
             <li><a href="#documents"><i class="fa-solid fa-folder-open"></i>Document Center</a></li>
+            <li><a href="contact.php"><i class="fa-solid fa-phone"></i>Contact ATC</a></li>
         </ul>
     </aside>
 
@@ -99,6 +105,36 @@ try{
             <div class="slide">
                 <img src="./pictures/pic3.jpg" alt="banner3">
             </div>
+            <div class="slide">
+                <img src="./pictures/pic4.jpg" alt="banner3">
+            </div>
+            <div class="slide">
+                <img src="./pictures/pic5.jpg" alt="banner3">
+            </div>
+            <div class="slide">
+                <img src="./pictures/pic6.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic7.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic8.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic9.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic10.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic11.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic12.jpg" alt="banner3">
+            </div>            
+            <div class="slide">
+                <img src="./pictures/pic13.jpg" alt="banner3">
+            </div>                      
         </div>
         <button class="slide-btn prev-btn" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
         <button class="slide-btn next-btn" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
@@ -108,7 +144,7 @@ try{
     <main class="main-container">
 
         <!--message from rector-->
-        <section class="card-box">
+        <section class="card-box" id="programmes">
             <h3 class="section-title" id="messageFromRector">MESSAGE FROM THE RECTOR</h3>
             <div class="rector-card">
                 <img src="./pictures/rector.jpg" alt="prof Musa N. Chacha" class="rector-img">
@@ -134,13 +170,14 @@ Our Student Services team will be here to support you through your studies. We w
         <section class="card-box">
             <h3 class="section-title">Search Programme</h3>
             <div class="section-form">
-                <select class="input-select">
+                <select class="input-select" id="programmeSelect" aria-label="Select a programme">
                     <option value="">-- Enter Programme Keyword --</option>
                     <option value="ict">Information Technology</option>
                     <option value="civil">Civil Engineering</option>
                     <option value="electrical">Electrical Engineering</option>
                 </select>
-                <button class="btn-search"><i class="fa-solid fa-magnifying-glass"></i>View Programme Details</button>
+                <button type="button" class="btn-search" id="programmeButton"><i class="fa-solid fa-magnifying-glass"></i>View Programme Details</button>
+                <p id="programmeMessage" class="programme-message" role="status" aria-live="polite"></p>
             </div>
         </section>
 
@@ -154,7 +191,7 @@ Our Student Services team will be here to support you through your studies. We w
                 <li>
                     <div class="postImg"><img src="<?= $row['name'] ?>" alt="post thumb"></div>
                     <div>
-                        <a href="https://www.youtube.com/results?search_query=<?= $row['description'] ?> ?> focus on ARUSHA TECHNICAL COLLEGE ATC"><?= $row['description'] ?></a>
+                        <a href="https://www.youtube.com/results?search_query=<?= urlencode($row['description'] . ' Arusha Technical College ATC') ?>" target="_blank" rel="noopener"><?= htmlspecialchars($row['description']) ?></a>
                         <small><i class="fa-regular fa-calendar"></i>Posted on: <?= $row['post_on'] ?></small>
                     </div>
                 </li>
@@ -164,27 +201,38 @@ Our Student Services team will be here to support you through your studies. We w
         </section>
 
         <!--Recent announcements-->
-        <section class="card-box">
+        <section class="card-box" id="announcements">
             <h3 class="section-title">Recent Announcements</h3>
+            <?php if(isset($announcementsResult)): ?>
             <ul class="list-announcements">
                 <li>
                     <span class="badge-new">NEW</span>
-                    <a href="#">JOINING INSTRUCTIONS FOR BACHELOR DEGREE STUDENTS ACADEMIC YEAR 2026/2027</a>
+                    <a href="register.php">JOINING INSTRUCTIONS FOR BACHELOR DEGREE STUDENTS ACADEMIC YEAR 2026/2027</a>
                     <div class="meta-info">
                         <span><i class="fa-regular fa-clock"></i>July 13, 2026</span>
-                        <a href="#" class="download-link"><i class="fa-solid fa-file-arrow-down"></i>Download</a>
+                        <a href="register.php" class="download-link"><i class="fa-solid fa-arrow-right"></i>Admissions</a>
                     </div>
                 </li>
+                <?php foreach($announcementsResult as $row): ?>
+                    <li>
+                    <span class="badge-new">NEW</span>
+                    <a href="#announcements"><?= htmlspecialchars($row['title']) ?></a>
+                    <div class="meta-info">
+                        <span><i class="fa-regular fa-clock"></i><?= $row['announced_on']; ?></span>
+                        <a href="contact.php" class="download-link"><i class="fa-solid fa-envelope"></i>Ask admissions</a>
+                    </li>
+                    <?php endforeach; ?>
             </ul>
+            <?php endif; ?>
         </section>
 
         <!--ATC DOC CENTER-->
         <section class="card-box" id="documents">
             <h3 class="section-title">ATC Document Center</h3>
             <ul class="list-documents">
-                <li><i class="fa-regular fa-file-pdf pdf-icon"></i><a href="#">Graduate Tracer Study Report, june 2026</a></li>
-                <li><i class="fa-regular fa-file-pdf pdf-icon"></i><a href="#">MKATABA WA HUDUMA KWA MTEJA</a></li>
-                <li><i class="fa-regular fa-file-pdf pdf-icon"></i><a href="#">FEE Structure for the Academic Year 2026/2027</a></li>
+                <li><i class="fa-regular fa-file-word pdf-icon"></i><a href="documents/6a9e7014624636.04289287.docx" download>Graduate Tracer Study Report, June 2026</a></li>
+                <li><i class="fa-regular fa-file-lines pdf-icon"></i><a href="contact.php">MKATABA WA HUDUMA KWA MTEJA - request copy</a></li>
+                <li><i class="fa-regular fa-file-lines pdf-icon"></i><a href="contact.php">Fee structure - request latest copy</a></li>
             </ul>
         </section>
         </section>
@@ -192,7 +240,7 @@ Our Student Services team will be here to support you through your studies. We w
         <section class="cta-banner">
             <h3>Are You Interested in joining Arusha Tchnical College></h3>
             <p>The college is accredited by Nacte to run and grant awards in technical and engineering programs.</p>
-            <a href="#" class="cta-btn">APPLY NOW</a>
+            <a href="register.php" class="cta-btn">APPLY NOW</a>
         </section>
     </main>
 
@@ -218,9 +266,9 @@ Our Student Services team will be here to support you through your studies. We w
             <div class="col-md-3 footer-block">
                 <h4>USEFUL LINKS</h4>
                 <ul>
-                    <li><a href="#">Ministry of Education</a></li>
-                    <li><a href="#"></a>Tanzania Commission for Universities</li>
-                    <li><a href="#">Higher Education Student's Loans Board</a></li>
+                    <li><a href="https://www.moe.go.tz/" target="_blank" rel="noopener">Ministry of Education</a></li>
+                    <li><a href="https://www.tcu.go.tz/" target="_blank" rel="noopener">Tanzania Commission for Universities</a></li>
+                    <li><a href="https://www.heslb.go.tz/" target="_blank" rel="noopener">Higher Education Students' Loans Board</a></li>
                 </ul>
             </div>
 

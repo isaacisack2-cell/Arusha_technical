@@ -1,0 +1,48 @@
+​TECHNICAL REPORT ON INDUSTRIAL PRACTICAL TRAINING (IPT)
+​FACULTY OF INFORMATION AND COMMUNICATION TECHNOLOGY
+ARUSHA TECHNICAL COLLEGE (ATC)
+​Student Name: Isaac Isack
+​Course: Information Technology (NTA Level 4)
+​IPT Station: Silla College, Arusha
+​Target Submission: Departmental IPT Coordinator
+​PART A: ORGANIZATION OF SILLA COLLEGE AND ITS OPERATIONS
+​1.1 Overview of Silla College
+​Silla College is an educational institution located in Arusha, Tanzania, dedicated to providing secondary, vocational, and professional training programs to students within the region. The institution operates through various academic and administrative departments to facilitate learning, student enrollment, and daily institutional management.
+​1.2 Organizational Structure and IT Integration
+​Silla College operates under a structured administrative hierarchy designed to ensure smooth daily operations:
+​Director / College Principal: Oversees overall administrative and strategic operations of the college.
+​Academic Department: Manages curriculum delivery, examination processing, timetable scheduling, and student performance tracking.
+​Finance and Accounting Unit: Handles tuition fee collection, invoicing, financial record management, and payroll.
+​IT & Systems Support Unit: Manages computer laboratories, office workstations, local network connectivity, software maintenance, and data backups.
+​1.3 Core Operations
+​The day-to-day operations at Silla College involve student registration, course delivery, fee clearance verification, record keeping, examination administration, and routine IT support. The IT support unit ensures that administrative workstations, printing facilities, internet routing, and administrative applications remain functional and accessible across all departments.
+​PART B: PROBLEM IDENTIFICATION, ANALYSIS, PROPOSED SOLUTION, AND IMPACT
+​2.1 Identified Challenge / Problem
+​Challenge: Manual and Paper-Based Student Registration and Fee Clearance Management System.
+During the practical training period at Silla College, it was observed that student enrollment, fee clearance verification, and personal record management heavily rely on physical paper filing and isolated basic spreadsheet records scattered across administrative offices.
+​2.2 System Analysis
+​A detailed operational study of the current manual process revealed several critical challenges:
+​Time Inefficiency: Administrative personnel spend excessive time manually searching through physical paper files to verify student details or fee receipts during registration periods.
+​Data Vulnerability & Loss: Physical paper records are vulnerable to wear, accidental misplacement, damage, and duplicate data entry across departments.
+​Lack of Real-Time Information Sharing: Academic officers and accounting personnel cannot instantly access or cross-verify student clearance statuses simultaneously.
+​2.3 Proposed Solution
+​Solution: Implementation of a Centralized Web-Based Student Management System (SMS).
+To address these administrative bottlenecks, a web-based database application is proposed. Key features of the system include:
+​A centralized relational database (e.g., MySQL) storing all student profiles, enrollment status, and fee records securely.
+​Role-based authentication (Admin, Accountant, Academic Officer) with secure password login and One-Time Password (OTP) verification for sensitive administrative actions.
+​Automated search and reporting capabilities allowing staff to retrieve student clearance status instantaneously.
+​2.4 Expected Impact
+​If implemented, the proposed web system will deliver significant operational improvements:
+​80% Reduction in Registration Processing Time: Fast electronic search replaces manual paper file hunting.
+​Enhanced Data Integrity: Centralized storage eliminates record duplication and physical data loss.
+​Improved Operational Transparency: Provides real-time financial and enrollment reports to college management.
+​PART C: PROPOSED TECHNICAL SOLUTION IN COLLABORATION WITH ARUSHA TECHNICAL COLLEGE (ATC)
+​3.1 Identified Challenge for Institutional Collaboration
+​Silla College requires an end-to-end modernization of its digital infrastructure, specifically:
+​Development of a customized, cost-effective Student Information System.
+​Deployment of a secure Local Area Network (LAN) and local server environment to host institutional software without reliance on expensive third-party vendor licenses.
+​3.2 Technical Solution Provided by ATC
+​In consultation with the Industrial Supervisor at Silla College, a collaborative project is proposed where Arusha Technical College (ATC)—through its ICT Department and technical expertise—can provide a tailored technical solution:
+​Custom Software Engineering: ATC ICT software teams and students can design, develop, and test a customized, lightweight Student Information Portal built specifically for Silla College’s requirements.
+​Network & Server Infrastructure Setup: ATC technical specialists can assist Silla College in configuring a localized server, establishing secure Local Area Network (LAN) routing, and implementing automated database backup procedures.
+​Capacity Building & Training: ATC can conduct practical workshops for Silla College administrative staff on system management, basic network troubleshooting, and data security maintenance.

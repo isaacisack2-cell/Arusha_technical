@@ -1,3 +1,131 @@
+<?php
+$senderEmail = 'isaacisack2@gmail.com';
+$senderName = 'ISAAC TECH SOLUTION';
+$admissionPhone = '+255619552706';
+$status = null;
+$statusType = 'success';
+
+function smtpCommand($socket, string $command, array $expectedCodes): void
+{
+    fwrite($socket, $command . "\r\n");
+    $response = '';
+    while (($line = fgets($socket, 515)) !== false) {
+        $response .= $line;
+        if (isset($line[3]) && $line[3] === ' ') {
+            break;
+        }
+    }
+
+    $code = (int) substr($response, 0, 3);
+    if (!in_array($code, $expectedCodes, true)) {
+        throw new RuntimeException('SMTP server rejected the request.');
+    }
+}
+
+function sendSmtpEmail(string $recipient, string $subject, string $body, string $senderEmail, string $senderName): void
+{
+    $password = getenv('ATC_SMTP_PASSWORD');
+    if (!$password) {
+        throw new RuntimeException('SMTP is not configured. Set ATC_SMTP_PASSWORD on the server.');
+    }
+
+    $socket = stream_socket_client('tcp://smtp.gmail.com:587', $errorCode, $errorMessage, 15);
+    if (!$socket) {
+        throw new RuntimeException('Could not connect to the SMTP server.');
+    }
+
+    try {
+        stream_set_timeout($socket, 15);
+        $greeting = fgets($socket, 515);
+        if ($greeting === false || (int) substr($greeting, 0, 3) !== 220) {
+            throw new RuntimeException('SMTP server did not provide a valid greeting.');
+        }
+        smtpCommand($socket, 'EHLO localhost', [250]);
+        smtpCommand($socket, 'STARTTLS', [220]);
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            throw new RuntimeException('Could not establish a secure SMTP connection.');
+        }
+        smtpCommand($socket, 'EHLO localhost', [250]);
+        smtpCommand($socket, 'AUTH LOGIN', [334]);
+        smtpCommand($socket, base64_encode($senderEmail), [334]);
+        smtpCommand($socket, base64_encode($password), [235]);
+        smtpCommand($socket, 'MAIL FROM:<' . $senderEmail . '>', [250]);
+        smtpCommand($socket, 'RCPT TO:<' . $recipient . '>', [250, 251]);
+        smtpCommand($socket, 'DATA', [354]);
+
+        $safeSubject = str_replace(["\r", "\n"], '', $subject);
+        $safeName = str_replace(["\r", "\n"], '', $senderName);
+        $headers = 'From: ' . $safeName . ' <' . $senderEmail . ">\r\n"
+            . 'To: <' . $recipient . ">\r\n"
+            . 'Subject: ' . $safeSubject . "\r\n"
+            . "MIME-Version: 1.0\r\n"
+            . "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
+        $message = preg_replace('/^(\.)/m', '.$1', $headers . $body);
+        fwrite($socket, $message . "\r\n.\r\n");
+        $response = fgets($socket, 515);
+        if ($response === false || (int) substr($response, 0, 3) !== 250) {
+            throw new RuntimeException('SMTP server could not deliver the email.');
+        }
+        smtpCommand($socket, 'QUIT', [221]);
+    } finally {
+        fclose($socket);
+    }
+}
+
+function sendSms(string $message): void
+{
+    $accountSid = getenv('ATC_SMS_ACCOUNT_SID');
+    $authToken = getenv('ATC_SMS_AUTH_TOKEN');
+    $from = getenv('ATC_SMS_FROM');
+    $to = getenv('ATC_SMS_TO') ?: '+255619552706';
+    if (!$accountSid || !$authToken || !$from) {
+        throw new RuntimeException('SMS is not configured. Set ATC_SMS_ACCOUNT_SID, ATC_SMS_AUTH_TOKEN and ATC_SMS_FROM.');
+    }
+    if (!function_exists('curl_init')) {
+        throw new RuntimeException('The PHP cURL extension is required for SMS.');
+    }
+
+    $curl = curl_init('https://api.twilio.com/2010-04-01/Accounts/' . rawurlencode($accountSid) . '/Messages.json');
+    curl_setopt_array($curl, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => http_build_query(['To' => $to, 'From' => $from, 'Body' => $message]),
+        CURLOPT_USERPWD => $accountSid . ':' . $authToken,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 15,
+    ]);
+    $response = curl_exec($curl);
+    $httpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    curl_close($curl);
+    if ($response === false || $httpCode < 200 || $httpCode >= 300) {
+        throw new RuntimeException('The SMS provider could not deliver the message.');
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    try {
+        if ($action === 'email') {
+            $recipient = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+            $message = trim($_POST['message'] ?? '');
+            if (!$recipient || $message === '') {
+                throw new InvalidArgumentException('Enter a valid email address and message.');
+            }
+            sendSmtpEmail($recipient, 'Message from ISAAC TECH SOLUTION', $message, $senderEmail, $senderName);
+            $status = 'Email sent successfully.';
+        } elseif ($action === 'sms') {
+            $message = trim($_POST['sms'] ?? '');
+            if ($message === '') {
+                throw new InvalidArgumentException('Enter an SMS message.');
+            }
+            sendSms($message);
+            $status = 'SMS sent successfully.';
+        }
+    } catch (Throwable $exception) {
+        $status = $exception->getMessage();
+        $statusType = 'danger';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,124 +133,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATC - CONTACTS</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style>
-        body{
-            background-color: rgba(200,199,210,0.8);
-        }
-
-        button a{
-            text-decoration:none;
-            font-weight: 700;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-        }
-
-        button a:hover{
-            color: white;
-        }
-
-        .logo{
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            overflow: hidden;
-        }
-
-        .card{transition: all 0.2s ease;background-color: #acb8;}
-        .card:hover{
-            transform: translateY(-2px);
-            scroll-behavior: smooth;
-            border: 1px solid #0000ff;
-            box-shadow: 0 4px 10px #302131;
-        }
-
-        .nav-brand{
-            color: #0000ff;
-            font-weight: bold;
-            font-size: 1.5rem;
-            text-decoration: none;
-            transition: color 0.5s ease-in, transform 0.2s ease-in-out;
-        }
-
-        .nav-brand:hover{
-            color: #FFFFFF;
-            transform: translateY(-3px);
-        }
-    </style>
+    <link rel="stylesheet" href="contact.css">
 </head>
-<body>
-
-<!-- NAVIGATION BAR -->
+<body class="contact-page">
 <div class="navbar navbar-dark bg-dark navbar-expand-lg">
     <div class="container-fluid">
-       <a href="index.php" class="nav-brand">HOME</a>
-       <a href="about.php" class="nav-brand">ABOUT US</a>
+        <a href="index.php" class="nav-brand">HOME</a>
+        <a href="about.php" class="nav-brand">ABOUT US</a>
         <a href="login.php" class="nav-brand">SIGNIN</a>
     </div>
 </div>
 
-
-    <div class="container mt-5">
-        <h3 class="text-info text-center mb-5">CONTACT US <br>
-            <span class="text-success">
-                <span class="logo m-3"><img src="pictures/atc logo.png" alt="ATC LOGO" class="logo mr-5"></span>
-                <h4>Arusha Technical College</h4>
-            </span>
-        </h3>
-        <div class="row">
-            <!-- SEND EMAIL -->
-            <div class="col-6 col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Send Email</h5>
-                        <p class="card-text">Enter your message</p>
-                        <form method="post">
-                            <textarea name="message" id="message" cols="30" rows="4" class="form-control" autocomplete="on" autocorrect="on"></textarea>
-                        <button type="submit" class="btn btn-outline-primary mt-4 w-100">
-                            <a href="mailto:isaacisack2@gmail.com?subject=User_contact&body=<?php if(isset($_POST['message'])){echo $_POST['message'];}else{echo "i need help on how to register online";} ?>" class="fw-200">
-                                SEND EMAIL
-                            </a>
-                        </button>
-                        </form>
-                    </div>
+<div class="container contact-shell">
+    <?php if ($status !== null): ?>
+        <div class="alert alert-<?php echo htmlspecialchars($statusType, ENT_QUOTES, 'UTF-8'); ?>" role="alert">
+            <?php echo htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
+    <?php endif; ?>
+    <h3 class="contact-heading text-center">CONTACT US <br>
+        <span class="text-success">
+            <img src="pictures/atc logo.png" alt="ATC LOGO" class="logo">
+            <span class="college-name">Arusha Technical College</span>
+        </span>
+    </h3>
+    <div class="row">
+        <div class="col-6 col-md-4">
+            <div class="card contact-card">
+                <div class="card-body">
+                    <h5 class="card-title">Send Email</h5>
+                    <p class="card-text">Enter your message</p>
+                    <form method="post">
+                        <input type="hidden" name="action" value="email">
+                        <label for="email" class="form-label">Your email address</label>
+                        <input type="email" name="email" id="email" class="form-control mb-3" required autocomplete="email">
+                        <textarea name="message" id="message" cols="30" rows="4" class="form-control" required></textarea>
+                        <button type="submit" class="btn contact-action mt-4 w-100">SEND EMAIL</button>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <!-- SEND SMS -->
-            <div class="col-6 col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Send SMS</h5>
-                        <p class="card-text">Enter your sms message to send</p>
-                        <form method="post">
-                            <textarea name="sms" id="sms" cols="30" rows="4" autocomplete="on" autocorrect="on" class="form-control"></textarea>
-                            <button type="submit" class="btn btn-outline-primary mt-4 w-100">
-                                <a href="sms:255619552706?body=<?php if(isset($_POST['sms'])){echo $_POST['sms'];}else{ echo "hello how can i register direct at ATC";} ?>">
-                                    SEND SMS
-                                </a>
-                            </button>
-                        </form>
-                    </div>
+        <div class="col-6 col-md-4">
+            <div class="card contact-card">
+                <div class="card-body">
+                    <h5 class="card-title">Send SMS</h5>
+                    <p class="card-text">Enter your SMS message to send</p>
+                    <form method="post">
+                        <input type="hidden" name="action" value="sms">
+                        <textarea name="sms" id="sms" cols="30" rows="4" class="form-control" required></textarea>
+                        <button type="submit" class="btn contact-action mt-4 w-100">SEND SMS</button>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <!-- PHONE CALL -->
-            <div class="col-12 col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">MAKE A PHONE CALL</h5>
-                        <p class="card-text text-primary fw-bold" style="font-family:Arial;">This will make a direct dial phone call to admisiion office. <br>If You have more requests you can just visit direct an admission office at atc</p>
-                        <form method="post">
-                            <button type="submit" class="btn btn-outline-primary mt-4 w-100">
-                                <a href="tel:255619552706">
-                                    CALL
-                                </a>
-                            </button>
-                        </form>
-                    </div>
+        <div class="col-12 col-md-4">
+            <div class="card contact-card">
+                <div class="card-body">
+                    <h5 class="card-title">MAKE A PHONE CALL</h5>
+                    <p class="card-text call-copy">This will make a direct dial phone call to the admission office.</p>
+                    <a class="btn contact-action mt-4 w-100" href="tel:<?php echo htmlspecialchars($admissionPhone, ENT_QUOTES, 'UTF-8'); ?>">CALL <?php echo htmlspecialchars($admissionPhone, ENT_QUOTES, 'UTF-8'); ?></a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>

@@ -3,18 +3,20 @@ const readLess = document.getElementById('readLess');
 const readMore = document.getElementById('readMore');
 const more = document.getElementById('more');
 
-more.style.display = "none";
-readLess.addEventListener('click',()=>{
-    more.style.display = "none";
-    readLess.innerText = "";
-    readMore.innerText = "Read More";
-});
-
-readMore.addEventListener('click',()=>{
-    more.style.display = "block";
-    readMore.innerText = "";
-    readLess.innerText = "Read Less";
-});
+if (more && readMore && readLess) {
+    more.hidden = true;
+    readLess.hidden = true;
+    readLess.addEventListener('click', () => {
+        more.hidden = true;
+        readLess.hidden = true;
+        readMore.hidden = false;
+    });
+    readMore.addEventListener('click', () => {
+        more.hidden = false;
+        readMore.hidden = true;
+        readLess.hidden = false;
+    });
+}
 
 //Toggle mobile menu
 const hambugerBtn = document.getElementById('hambugerBtn');
@@ -26,13 +28,13 @@ const closeDrawer = document.getElementById('closeDrawer');
 const closeInfo = document.getElementById('closeInfo');
 
 //toggle mobile navigation left
-hambugerBtn.addEventListener('click',()=>{
+hambugerBtn?.addEventListener('click',()=>{
     mobileDrawer.classList.add('active');
     overlay.classList.add('active');
 });
 
 //toggle three dot info model right
-infoBtn.addEventListener('click',()=>{
+infoBtn?.addEventListener('click',()=>{
     infoModel.classList.add('active');
     overlay.classList.add('active');
 });
@@ -44,8 +46,22 @@ const closeAll = ()=>{
     overlay.classList.remove('active');
 };
 
-closeDrawer.addEventListener('click',closeAll())
-closeInfo.addEventListener('click',closeAll())
+closeDrawer?.addEventListener('click', closeAll);
+closeInfo?.addEventListener('click', closeAll);
+overlay?.addEventListener('click', closeAll);
+mobileDrawer?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeAll);
+});
+
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+    if (scrollTopBtn) {
+        scrollTopBtn.style.display = window.scrollY > 420 ? 'block' : 'none';
+    }
+});
+scrollTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 
 //2.AUTO SCROLLING CAROUSEL
@@ -72,20 +88,20 @@ const prevSlide = ()=>{
 };
 
 //autoscrolling
-let autoscroll = setInterval(nextSlide(),3000);
+let autoscroll = setInterval(nextSlide, 3000);
 
 //manual controll
-nextBtn.addEventListener('click',()=>{
+nextBtn?.addEventListener('click',()=>{
     nextSlide();
     resetTimer();
 })
 
-prevBtn.addEventListener('click',()=>{
+prevBtn?.addEventListener('click',()=>{
     prevSlide();
     resetTimer();
 })
 
 const resetTimer = ()=>{
     clearInterval(autoscroll);
-    autoscroll = setInterval(nextSlide(),3000);
+    autoscroll = setInterval(nextSlide, 3000);
 }

@@ -11,7 +11,7 @@ $allowed_extensions = ['jpg','jpeg','png','pdf','mp4','gif'];
 if($file_error == 0){
     if(in_array($file_extension,$allowed_extensions)){
         if($file_size < 5*1024*1024){
-            $post_name = $dir.uniqid("",true).$file_extension;
+            $post_name = $dir . uniqid('', true) . '.' . $file_extension;
             if(move_uploaded_file($temp_file,$post_name)){
                 $sql = $pdo->prepare("INSERT INTO posts(name,description) VALUES (:name,:desc)");
                 $sql->execute([
