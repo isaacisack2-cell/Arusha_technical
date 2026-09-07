@@ -98,7 +98,7 @@ try {
                         <span class="tick" id="tick2"></span>
                     </div>
 
-                    <p>forgot password?<a href="reset.php">Reset</a></p>
+                    <p>forgot password?<a href="reset.html">Reset</a></p>
                     <p>are you first year student?<a href="register.php">Sign Up</a></p>
                     <p class="text-muted">Need help? Contact admissions for account support.</p>
                     <input type="submit" value="Login" id="login_btn" name="login" class="btn btn-success w-100">
