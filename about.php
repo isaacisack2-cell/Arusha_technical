@@ -9,7 +9,7 @@
         :root {
             --ink: #10233f;
             --ink-deep: #07172c;
-            --blue: #164e8e;
+            --green: #198754;
             --sky: #dceef4;
             --gold: #e6ad3d;
             --coral: #e46d4d;
@@ -98,7 +98,7 @@
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); width: min(1040px, calc(100% - 2.5rem)); margin: auto; border-top: 4px solid var(--gold); background: var(--white); box-shadow: var(--shadow); }
         .stat { padding: 1.5rem 1.7rem; border-right: 1px solid var(--line); }
         .stat:last-child { border-right: 0; }
-        .stat strong { display: block; color: var(--blue); font-family: Georgia, serif; font-size: 2.2rem; font-weight: 500; line-height: 1; }
+        .stat strong { display: block; color: var(--green); font-family: Georgia, serif; font-size: 2.2rem; font-weight: 500; line-height: 1; }
         .stat span { display: block; margin-top: 0.45rem; color: var(--muted); font-size: 0.75rem; font-weight: 700; }
         .section { width: min(1180px, calc(100% - 2.5rem)); margin: auto; padding: 7rem 0; }
         .section-intro { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 5rem; align-items: end; margin-bottom: 3rem; }

@@ -1,76 +1,11 @@
 <?php
+require_once __DIR__ . '/mailer.php';
+
 $senderEmail = 'isaacisack2@gmail.com';
 $senderName = 'ISAAC TECH SOLUTION';
 $admissionPhone = '+255619552706';
 $status = null;
 $statusType = 'success';
-
-function smtpCommand($socket, string $command, array $expectedCodes): void
-{
-    fwrite($socket, $command . "\r\n");
-    $response = '';
-    while (($line = fgets($socket, 515)) !== false) {
-        $response .= $line;
-        if (isset($line[3]) && $line[3] === ' ') {
-            break;
-        }
-    }
-
-    $code = (int) substr($response, 0, 3);
-    if (!in_array($code, $expectedCodes, true)) {
-        throw new RuntimeException('SMTP server rejected the request.');
-    }
-}
-
-function sendSmtpEmail(string $recipient, string $subject, string $body, string $senderEmail, string $senderName): void
-{
-    $password = getenv('ATC_SMTP_PASSWORD');
-    if (!$password) {
-        throw new RuntimeException('SMTP is not configured. Set ATC_SMTP_PASSWORD on the server.');
-    }
-
-    $socket = stream_socket_client('tcp://smtp.gmail.com:587', $errorCode, $errorMessage, 15);
-    if (!$socket) {
-        throw new RuntimeException('Could not connect to the SMTP server.');
-    }
-
-    try {
-        stream_set_timeout($socket, 15);
-        $greeting = fgets($socket, 515);
-        if ($greeting === false || (int) substr($greeting, 0, 3) !== 220) {
-            throw new RuntimeException('SMTP server did not provide a valid greeting.');
-        }
-        smtpCommand($socket, 'EHLO localhost', [250]);
-        smtpCommand($socket, 'STARTTLS', [220]);
-        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            throw new RuntimeException('Could not establish a secure SMTP connection.');
-        }
-        smtpCommand($socket, 'EHLO localhost', [250]);
-        smtpCommand($socket, 'AUTH LOGIN', [334]);
-        smtpCommand($socket, base64_encode($senderEmail), [334]);
-        smtpCommand($socket, base64_encode($password), [235]);
-        smtpCommand($socket, 'MAIL FROM:<' . $senderEmail . '>', [250]);
-        smtpCommand($socket, 'RCPT TO:<' . $recipient . '>', [250, 251]);
-        smtpCommand($socket, 'DATA', [354]);
-
-        $safeSubject = str_replace(["\r", "\n"], '', $subject);
-        $safeName = str_replace(["\r", "\n"], '', $senderName);
-        $headers = 'From: ' . $safeName . ' <' . $senderEmail . ">\r\n"
-            . 'To: <' . $recipient . ">\r\n"
-            . 'Subject: ' . $safeSubject . "\r\n"
-            . "MIME-Version: 1.0\r\n"
-            . "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
-        $message = preg_replace('/^(\.)/m', '.$1', $headers . $body);
-        fwrite($socket, $message . "\r\n.\r\n");
-        $response = fgets($socket, 515);
-        if ($response === false || (int) substr($response, 0, 3) !== 250) {
-            throw new RuntimeException('SMTP server could not deliver the email.');
-        }
-        smtpCommand($socket, 'QUIT', [221]);
-    } finally {
-        fclose($socket);
-    }
-}
 
 function sendSms(string $message): void
 {
@@ -110,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$recipient || $message === '') {
                 throw new InvalidArgumentException('Enter a valid email address and message.');
             }
-            sendSmtpEmail($recipient, 'Message from ISAAC TECH SOLUTION', $message, $senderEmail, $senderName);
+            sendProjectEmail($recipient, 'Message from ISAAC TECH SOLUTION', $message);
             $status = 'Email sent successfully.';
         } elseif ($action === 'sms') {
             $message = trim($_POST['sms'] ?? '');

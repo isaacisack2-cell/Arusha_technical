@@ -172,7 +172,7 @@ if (empty($adminData['documents']) && !empty($documents)) {
     <nav class="navbar navbar-light bg-white border-bottom shadow-sm px-4">
         <div class="container-fluid">
             <div>
-                <div class="fw-bold text-primary">ATC - SMS</div>
+                <div class="fw-bold text-success">ATC - SMS</div>
                 <h4 class="mb-0">Admin Dashboard</h4>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -208,7 +208,7 @@ if (empty($adminData['documents']) && !empty($documents)) {
                             <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" rows="3" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Upload Post</button>
+                        <button type="submit" class="btn btn-success">Upload Post</button>
                     </form>
                 </div>
 

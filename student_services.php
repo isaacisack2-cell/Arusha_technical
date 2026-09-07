@@ -228,7 +228,7 @@ $current = $pages[$page] ?? $pages['overview'];
     <style>
         body { background: #f4f7fb; }
         .content-card { background: white; border-radius: 18px; box-shadow: 0 12px 30px rgba(28,44,89,0.08); }
-        .service-icon-lg { width: 92px; height: 92px; border-radius: 20px; background: linear-gradient(135deg, #e8ebff, #dfeaff); color: #2449d6; display:flex; align-items:center; justify-content:center; font-size:2.4rem; }
+        .service-icon-lg { width: 92px; height: 92px; border-radius: 20px; background: linear-gradient(135deg, #e1f3e7, #d4ebdc); color: #198754; display:flex; align-items:center; justify-content:center; font-size:2.4rem; }
         .mini-card { border: 1px solid #edf0f6; border-radius: 14px; background: #f9fbff; padding: 1rem; }
         .profile-img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid #e8ebf5; }
     </style>
@@ -239,7 +239,7 @@ $current = $pages[$page] ?? $pages['overview'];
             <div class="d-flex align-items-center gap-2">
                 <img src="pictures/atc logo.png" alt="ATC logo" style="width:48px;">
                 <div>
-                    <div class="fw-bold text-primary" style="font-size:0.8rem;">ATC - SMS</div>
+                    <div class="fw-bold text-success" style="font-size:0.8rem;">ATC - SMS</div>
                     <div class="fw-bold">Student Service</div>
                 </div>
             </div>

@@ -23,9 +23,9 @@ $studentPhoto = $_SESSION['student_photo'] ?? 'pictures/atc logo.png';
         }
         .service-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
         .service-icon {
-            width: 48px; height: 48px; min-width: 48px; border-radius: 8px; background-color: #eef2ff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #2d5ed8;
+            width: 48px; height: 48px; min-width: 48px; border-radius: 8px; background-color: #e1f3e7; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #198754;
         }
-        .service-title { color: #2d5ed8; font-weight: 600; font-size: 0.98rem; margin-bottom: 2px; }
+        .service-title { color: #12633e; font-weight: 600; font-size: 0.98rem; margin-bottom: 2px; }
         .service-sub { color: #6c757d; font-size: 0.82rem; margin: 0; }
         .section-label { font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; color: #495057; margin: 1.75rem 0 0.9rem 0; }
         .profile-thumb { width: 54px; height: 54px; object-fit: cover; border-radius: 50%; border: 2px solid #e8ebf5; }
@@ -39,7 +39,7 @@ $studentPhoto = $_SESSION['student_photo'] ?? 'pictures/atc logo.png';
                     <img src="pictures/atc logo.png" alt="atc logo" class="col-8">
                 </div>
                 <div>
-                    <div class="fw-bold text-primary" style="font-size:0.8rem;">ATC - SMS</div>
+                    <div class="fw-bold text-success" style="font-size:0.8rem;">ATC - SMS</div>
                     <div class="fw-bold" style="font-size:1.2rem;">Student Dashboard</div>
                 </div>
             </div>

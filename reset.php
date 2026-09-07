@@ -1,80 +1,12 @@
 <?php
 require 'config.php';
+require_once __DIR__ . '/mailer.php';
 
 $senderEmail = 'isaacisack2@gmail.com';
 $senderName = 'ISAAC TECH SOLUTION';
 $message = null;
 $error = null;
 $verifiedAdno = $_SESSION['password_reset_adno'] ?? null;
-
-function smtpCommand($socket, string $command, array $expectedCodes): void
-{
-    fwrite($socket, $command . "\r\n");
-    $response = '';
-    while (($line = fgets($socket, 515)) !== false) {
-        $response .= $line;
-        if (isset($line[3]) && $line[3] === ' ') {
-            break;
-        }
-    }
-
-    if (!in_array((int) substr($response, 0, 3), $expectedCodes, true)) {
-        throw new RuntimeException('SMTP server rejected the request.');
-    }
-}
-
-function sendTemporaryPassword(string $recipient, string $temporaryPassword, string $senderEmail, string $senderName): void
-{
-    $smtpPassword = getenv('ATC_SMTP_PASSWORD');
-    if (!$smtpPassword) {
-        throw new RuntimeException('Email service is not configured. Set ATC_SMTP_PASSWORD on the server.');
-    }
-
-    $socket = stream_socket_client('tcp://smtp.gmail.com:587', $errorCode, $errorMessage, 15);
-    if (!$socket) {
-        throw new RuntimeException('Could not connect to the email service.');
-    }
-
-    try {
-        stream_set_timeout($socket, 15);
-        $greeting = fgets($socket, 515);
-        if ($greeting === false || (int) substr($greeting, 0, 3) !== 220) {
-            throw new RuntimeException('The email service did not provide a valid greeting.');
-        }
-        smtpCommand($socket, 'EHLO localhost', [250]);
-        smtpCommand($socket, 'STARTTLS', [220]);
-        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            throw new RuntimeException('Could not establish a secure email connection.');
-        }
-        smtpCommand($socket, 'EHLO localhost', [250]);
-        smtpCommand($socket, 'AUTH LOGIN', [334]);
-        smtpCommand($socket, base64_encode($senderEmail), [334]);
-        smtpCommand($socket, base64_encode($smtpPassword), [235]);
-        smtpCommand($socket, 'MAIL FROM:<' . $senderEmail . '>', [250]);
-        smtpCommand($socket, 'RCPT TO:<' . $recipient . '>', [250, 251]);
-        smtpCommand($socket, 'DATA', [354]);
-
-        $safeName = str_replace(["\r", "\n"], '', $senderName);
-        $headers = 'From: ' . $safeName . ' <' . $senderEmail . ">\r\n"
-            . 'To: <' . $recipient . ">\r\n"
-            . "Subject: ATC-SMS temporary password\r\n"
-            . "MIME-Version: 1.0\r\n"
-            . "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
-        $body = "Your ATC-SMS temporary password is: " . $temporaryPassword
-            . "\r\n\r\nLog in using this password and change it from your student services page."
-            . "\r\n\r\n" . $senderName;
-        $email = preg_replace('/^(\.)/m', '.$1', $headers . $body);
-        fwrite($socket, $email . "\r\n.\r\n");
-
-        $response = fgets($socket, 515);
-        if ($response === false || (int) substr($response, 0, 3) !== 250) {
-            throw new RuntimeException('The email service could not deliver the temporary password.');
-        }
-        smtpCommand($socket, 'QUIT', [221]);
-    } finally {
-        fclose($socket);
-    }
-}
 
 function createTemporaryPassword(): string
 {
@@ -134,7 +66,13 @@ if ($requestMethod === 'POST' && isset($_POST['reset_password'])) {
         $pdo->beginTransaction();
         $passwordUpdate = $pdo->prepare('UPDATE student SET Password = :password WHERE Adno = :adno');
         $passwordUpdate->execute([':password' => $passwordHash, ':adno' => $adno]);
-        sendTemporaryPassword($email, $temporaryPassword, $senderEmail, $senderName);
+        sendProjectEmail(
+            $email,
+            'ATC-SMS temporary password',
+            "Your ATC-SMS temporary password is: " . $temporaryPassword
+                . "\r\n\r\nLog in using this password and change it from your student services page."
+                . "\r\n\r\n" . $senderName
+        );
         $pdo->commit();
         unset($_SESSION['password_reset_adno']);
         $message = 'Temporary password imetumwa kwenye email iliyosajiliwa kwenye account yako.';

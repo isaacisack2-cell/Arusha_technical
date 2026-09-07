@@ -63,6 +63,19 @@ scrollTopBtn?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+const programmeSelect = document.getElementById('programmeSelect');
+const programmeButton = document.getElementById('programmeButton');
+const programmeMessage = document.getElementById('programmeMessage');
+programmeButton?.addEventListener('click', () => {
+    const programme = programmeSelect?.value;
+    if (!programme) {
+        if (programmeMessage) programmeMessage.textContent = 'Select a programme first.';
+        programmeSelect?.focus();
+        return;
+    }
+    window.location.href = `register.php?course=${encodeURIComponent(programme)}`;
+});
+
 
 //2.AUTO SCROLLING CAROUSEL
 const sliderWrapper = document.getElementById('slideWrapper');

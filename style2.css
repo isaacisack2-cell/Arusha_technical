@@ -170,8 +170,8 @@ body{
 }
 
 .section-title{
-    color: #0b1a78;
-    border-bottom: 2px solid #0b1a78;
+    color: #12633e;
+    border-bottom: 2px solid #198754;
     padding-bottom: 8px;
     margin-bottom: 15px;
     font-size: 1.2rem;
@@ -189,7 +189,7 @@ body{
     margin-bottom: 10px;
 }
 
-.rector-card h4{color: #0b1a78;}
+.rector-card h4{color: #12633e;}
 .rector-card .subtitle{font-size: 0.9rem;color: #666;margin-bottom: 10px;}
 
 /* SEARCH AND LIST*/
@@ -205,11 +205,19 @@ body{
     width: 100%;
     padding: 10px;
     background-color: #e2e8f0;
-    color: #0b1a78;
-    border: 1px solid #cbd5e1;
+    color: #12633e;
+    border: 1px solid #b9d8c5;
     font-weight: bold;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.programme-message{
+    min-height: 1.4rem;
+    margin: 8px 0 0;
+    color: #b42318;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .list-posts li, .list-announcements li, .list-documents li{
@@ -236,7 +244,7 @@ body{
 
 /* CTA BANNER*/
 .cta-banner{
-    background: linear-gradient(135deg,#004bb1,#0b1a78);
+    background: linear-gradient(135deg,#198754,#12633e);
     color: white;
     text-align: center;
     padding: 30px 20px;
@@ -258,7 +266,7 @@ body{
 
 /* FOOTER */
 .footer{
-    background-color: #061152;
+    background-color: #123b2a;
     color: white;
     padding: 30px 20px 15px;
 }
@@ -343,7 +351,7 @@ body{
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background-color: #0b1a78;
+    background-color: #198754;
     color: white;
     border: none;
     cursor: pointer;
