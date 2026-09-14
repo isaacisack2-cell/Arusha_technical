@@ -60,7 +60,7 @@
 
         <section class="card" aria-labelledby="verify-title">
             <h2 id="verify-title">Account verification</h2>
-            <p class="card-copy">Hatutaendelea hatua inayofuata mpaka admission number iwepo kwenye database na iwe na email sahihi.</p>
+            <p class="card-copy">Admission number not registered. Make sure you type it well</p>
             <div class="message" id="messageBox" role="alert"></div>
             <form id="verifyForm">
                 <label for="adno">Admission number</label>
@@ -105,7 +105,7 @@
                 showMessage(result.message, 'success');
                 window.setTimeout(() => { window.location.href = 'reset.php'; }, 450);
             } catch (error) {
-                showMessage('Mfumo haukupatikana. Tafadhali jaribu tena.', 'error');
+                showMessage('Server not founf. Please try again later.', 'error');
             } finally {
                 button.disabled = false;
                 button.textContent = 'VERIFY ADMISSION NUMBER';

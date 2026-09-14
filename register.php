@@ -100,15 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                     <form method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="course" class="form-label">Course</label>
-                            <input type="text" name="course" id="course" list="courselist" class="form-control" required placeholder="Enter your course name" value="<?= htmlspecialchars($selectedCourse, ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="text" name="course" id="course" list="courselist" class="form-control" required placeholder="Enter your course name">
                             <datalist id="courselist">
-                                <option value="IT">Information Technology</option>
+                                <option value="IT">INFORMATION TECHNOLOGY</option>
                                 <option value="CS">Computer Science</option>
                                 <option value="CIVIL">Civil Engineering</option>
-                                <option value="LAB SCIENCE">Laboratory Science</option>
-                                <option value="MECHATRONICS">Mechatronics</option>
-                                <option value="TOURISM">Tourism</option>
-                                <option value="HOTEL">Hotel Management</option>
+                                <option value="LAB SCIENCE">
+                                <option value="MECHATRONICS">
+                                <option value="TOURISM">
+                                <option value="HOTEL">
                             </datalist>
                         </div>
 
